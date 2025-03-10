@@ -9,8 +9,10 @@ namespace SQLSample
     {
         public static void Main()
         {
+            string sqlConnection = "Server=localhost\\MSSQLSERVER01;Database=automobiliudb;Trusted_Connection=True;TrustServerCertificate=true;";
             //                                                          Pas jus turetu buti localhost, ne localhost\\MSSQLSERVER01
-            ICarsRepository carsRepository = new CarsRepository("Server=localhost\\MSSQLSERVER01;Database=automobiliudb;Trusted_Connection=True;TrustServerCertificate=true;");
+            ICarsRepository carsRepository = new CarsRepository(sqlConnection);
+            ICustomerRepository customerRepository = new CustomerRepository(sqlConnection);
             /* Automobiliu pridejimas
             Car newCar = new Car
             {
@@ -21,7 +23,10 @@ namespace SQLSample
             };
             carsRepository.AddCar(newCar);
             */
-
+            foreach(var c in customerRepository.GetAllCustomers())
+            {
+                Console.WriteLine($"{c.CustomerId} {c.FullName}");
+            }
             foreach(Car c in carsRepository.GetAllCars())
             {
                 Console.WriteLine($"{c.Make} {c.Model} {c.LicensePlate} {c.FirstRegistration.ToString("yyyy-MM")}");
@@ -49,6 +54,13 @@ namespace SQLSample
                 return;
             }
             Console.WriteLine($"{carBylicensePlate.Make} {carBylicensePlate.Model} {carBylicensePlate.LicensePlate} {carBylicensePlate.FirstRegistration.ToString("yyyy-MM")}");
+
+            Console.WriteLine("Customer fullname: ");
+            Customer customer = new Customer()
+            {
+                FullName = Console.ReadLine()
+            };
+            customerRepository.AddCustomer(customer);
         }
     }
 }
